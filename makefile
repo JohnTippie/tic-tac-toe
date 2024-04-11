@@ -1,6 +1,6 @@
-CFLAGS=-std=c17
+CFLAGS=-std=c++17 -Wall -Werror -Wextra
 LIBS=-lmingw32
-SOURCES=main.c
+SOURCES=main.cpp
 
 all: 
-	gcc $(SOURCES) -o tic-tac-toe $(CFLAGS) -L$(LIBS)
+	g++ $(SOURCES) -o tic-tac-toe $(CFLAGS) -L$(LIBS)
