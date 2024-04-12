@@ -14,3 +14,5 @@ void player_input();
 void computer_input();
 char evaluate_win_conditions();
 void print_winner(char winner);
+bool get_continue();
+int get_remaining_spaces();

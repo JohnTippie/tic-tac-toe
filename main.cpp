@@ -3,26 +3,25 @@
 char board[3][3];
 char PLAYER = 'X';
 char COMPUTER = 'O';
-uint8_t spaces_remaining = 9;
 
 int main() {
 
     // General Setup
     bool running = true;
-    char winner = ' ';
     srand(time(NULL));
     get_player_symbols();
-    reset_board();
-
+    
     while (running) {
 
-        while (winner == ' ' && spaces_remaining != 0) {
+        reset_board();
+        char winner = ' ';
+        while (winner == ' ' && get_remaining_spaces() != 0) {
             
             // Player Turn
             print_board();
             player_input();
             winner = evaluate_win_conditions();
-            if (winner != ' ' || spaces_remaining == 0)
+            if (winner != ' ' || get_remaining_spaces() == 0)
                 break;
 
             // Computer Turn
@@ -30,14 +29,14 @@ int main() {
             computer_input();
             Sleep(.75 * 1000);
             winner = evaluate_win_conditions();
-            if (winner != ' ' || spaces_remaining != 0)
+            if (winner != ' ' || get_remaining_spaces() == 0)
                 break;
         }
 
         print_board();
         print_winner(winner);
-
-        // running = get_continue();
+        Sleep(.75 * 1000);
+        running = get_continue();
         if (!running)
             break;
     }
@@ -170,7 +169,6 @@ void player_input() {
     } while (board[x][y] != ' ');
 
     board[x][y] = PLAYER;
-    spaces_remaining--;
 }
 
 char evaluate_win_conditions() {
@@ -217,4 +215,44 @@ void print_winner(char winner) {
         printf("COMPUTER WINS!\n");
     else
         printf("IT'S A TIE!\n");
+}
+
+bool get_continue() {
+    char response;
+
+    do {
+        std::string input;
+        system("cls");
+        printf("Would you like to play again? (Y/N)\n");
+        std::cin >> input;
+
+        // Validate the user entered only 1 character
+        if (input.length() != 1) {
+            printf("Invalid selection: Too long. Please only enter 'Y' or 'N'\n");
+            Sleep(1.5 * 1000);
+        } else
+            response = toupper(input[0]);
+        
+        // Validate the user entered only 'Y' or 'N'
+        if (response)
+            if (response != 'Y' && response != 'N') {
+                printf("Invalid selection: Incorrect Char. Please only enter 'Y' or 'N'\n");
+                Sleep(1.5 * 1000);
+            }
+
+    } while (response != 'Y' && response != 'N');
+
+    return (response == 'Y') ? true : false;
+}
+
+int get_remaining_spaces() {
+    int free_spaces = 9;
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (board[i][j] != ' ')
+                free_spaces--;
+        }
+    }
+    return free_spaces;
 }
